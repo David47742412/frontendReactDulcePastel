@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {GenericView} from "./model/utility/GenericView";
+import React from 'react';
+import {Login} from "./view/login/Login";
 
 const App = (): JSX.Element => {
-    const [datos, setDatos] = useState<GenericView[]>([]);
-
-    useEffect(() => {
+/*
+    useEffect(() => {wss://localhost:7104/auth/login
         const ws = new WebSocket("wss://localhost:7154/ws");
         ws.onopen = () => {
             console.log("connected");
@@ -20,12 +19,10 @@ const App = (): JSX.Element => {
             console.log("disconnected");
         };
     }, []);
-
+*/
     return (
         <>
-            {datos.map(d => (
-                <h1 key={d.Value1}>{d.Value2}</h1>
-            ))}
+           <Login />
         </>
     );
 }
