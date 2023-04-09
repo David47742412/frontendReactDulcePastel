@@ -1,0 +1,88 @@
+@font-face {
+    font-family: poppins-bold;
+    src: url("../fonts/poppins/Poppins-Bold.ttf");
+}
+
+@font-face {
+    font-family: poppins;
+    src: url("../fonts/poppins/Poppins-Regular.ttf");
+}
+
+* {
+    font-family: poppins, sans-serif;
+}
+
+.PriceInput span {
+    width: 14%;
+    background: #50d07f;
+    color: white;
+}
+
+@media only screen and (max-width: 767px) {
+    .PriceInput {
+        width: 100%;
+    }
+    .PriceInput span {
+        width: 12%;
+        background: #50d07f;
+        color: white;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .PriceInput span {
+        width: 15%;
+        background: #50d07f;
+    }
+}
+
+.paddingTopFind  {
+    margin-top: 1em;
+}
+
+.styleButtonAction {
+    margin-top: 2em;
+    background: #50d07f;
+    border: none;
+    margin-bottom: 2em;
+}
+
+* {
+    font-family: poppins, sans-serif;
+}
+
+.mainTitleText h1 {
+    font-family: poppins-bold, sans-serif;
+}
+
+.mainTitleText p {
+    font-family: poppins, sans-serif;
+    color: #8f8e92;
+}
+
+.mainTitleText {
+    padding: .6em;
+    text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+    .CenterInputs div {
+        padding-bottom: 1em;
+        margin-right: 0;
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .CenterInputs div {
+        padding-bottom: 1em;
+        margin-left: 22%;
+        width: 55%;
+    }
+}
+
+.backGroundForm {
+    background: #f9f9f9;
+    border-radius: 15px;
+}

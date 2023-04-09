@@ -1,5 +1,5 @@
 import React from 'react';
-import {Login} from "./view/login/Login";
+import {Custormers} from "./view/customers/Custormers";
 
 const App = (): JSX.Element => {
 /*
@@ -22,7 +22,7 @@ const App = (): JSX.Element => {
 */
     return (
         <>
-           <Login />
+           <Custormers />
         </>
     );
 }

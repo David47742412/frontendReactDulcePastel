@@ -1,0 +1,51 @@
+@font-face {
+    font-family: poppins-bold;
+    src: url("../../../fonts/poppins/Poppins-Bold.ttf");
+}
+
+@font-face {
+    font-family: poppins-std;
+    src: url("../../../fonts/poppins/Poppins-Regular.ttf");
+}
+
+* {
+    font-family: poppins-std, sans-serif;
+}
+
+.titleText h1 {
+    text-align: center;
+    font-family: poppins-bold, sans-serif;
+    padding-top: 1em;
+}
+
+.titleText p, button {
+    text-align: center;
+    font-family: poppins-std, sans-serif;
+}
+
+.formLogin {
+    border-radius: 30px;
+    background: #f9f9f9;
+}
+
+.PositionLabels label {
+    margin-top: 1em;
+}
+
+.centerDivWithInputs div {
+    padding-top: 1em;
+    text-align: center;
+    width: 40%;
+    margin-left: 31%;
+    margin-right: 25%;
+
+}
+
+@media only screen and (max-width: 767px), (max-height: 536px) {
+    .centerDivWithInputs div {
+        padding-top: 1em;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+}

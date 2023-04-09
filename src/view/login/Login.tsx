@@ -8,9 +8,19 @@ interface UserContextType {
     setUser: Dispatch<SetStateAction<User | null>>;
 }
 
+interface TokenContextType {
+    token: string | null,
+    setToken: Dispatch<SetStateAction<string | null>>;
+}
+
 export const UserContext = createContext<UserContextType>({
     user: null,
     setUser: () => null,
+})
+
+export const TokenContext = createContext<TokenContextType>({
+    token: null,
+    setToken: () => null
 })
 
 export const Login: FC = () => {
@@ -20,6 +30,7 @@ export const Login: FC = () => {
     });
 
     const { setUser } = useContext(UserContext);
+    const { setToken } = useContext(TokenContext);
 
     const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = ev.target;
@@ -30,29 +41,27 @@ export const Login: FC = () => {
         ev.preventDefault();
         try {
             const ws = new WebSocket("wss://localhost:7104/auth/login");
-            console.log("antes")
             ws.onopen = () => {
                 const loginData = {
                     email: formData.email,
                     password: formData.password
                 }
-                console.log("enviado")
                 ws.send(JSON.stringify(loginData));
             }
             ws.onmessage = async (ev: MessageEvent) => {
                 const userData = JSON.parse(ev.data) as MessageSocket<User>;
                 const data = new MessageSocket<User>(userData);
-                console.log("reciviendo")
                 console.log(data)
-                if (data.Status === 200)
+                if (data.Status === 200) {
                     setUser(userData.Data[0]);
+                    setToken(userData.Token);
+                }
             }
-            ws.onclose = () => {console.log("cerrando")}
+            ws.onclose = () => {}
         } catch (e) {
             throw e;
         }
     }
-
     return (
         <>
             <form onSubmit={handleSubmit}>
