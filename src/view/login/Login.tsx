@@ -24,6 +24,7 @@ export const TokenContext = createContext<TokenContextType>({
 })
 
 export const Login: FC = () => {
+    
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -36,7 +37,7 @@ export const Login: FC = () => {
         const { name, value } = ev.target;
         setFormData({...formData, [name]: value});
     }
-
+    
     const handleSubmit = async (ev: FormEvent<HTMLFormElement>) => {
         ev.preventDefault();
         try {
@@ -50,9 +51,7 @@ export const Login: FC = () => {
             }
             ws.onmessage = async (ev: MessageEvent) => {
                 const userData = JSON.parse(ev.data) as MessageSocket<User>;
-                const data = new MessageSocket<User>(userData);
-                console.log(data)
-                if (data.Status === 200) {
+                if (userData.Status === 200) {
                     setUser(userData.Data[0]);
                     setToken(userData.Token);
                 }
@@ -62,6 +61,7 @@ export const Login: FC = () => {
             throw e;
         }
     }
+    
     return (
         <>
             <form onSubmit={handleSubmit}>
