@@ -2,11 +2,14 @@ import React, {ChangeEvent, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../style/customers/customersStyle.css';
 import {NavBar} from "../nav/NavBar";
-import {Login} from "../login/Login";
-
+import {User} from "../../model/user/dto/User";
 
 export const Customers = (): JSX.Element => {
     
+    const user = JSON.parse(localStorage.getItem(".Session.DulcePastel.User") as string) as User;
+    const token = localStorage.getItem(".Session.DulcePastel.Token") as string;
+    
+    if (user == null && token == null) window.location.href = "/login";
 
     const [FormData, setFormData] = useState({
         id: "",
@@ -32,10 +35,9 @@ export const Customers = (): JSX.Element => {
         setFormData({...FormData, [name]: value})
         console.log(value);
     }
-    if (localStorage.getItem(".Session.DulcePastel.") == null) return <Login />
     
     return (
-        <div>
+        <>
             <NavBar />
             <div className="mainTitleText">
                 <h1>Clientes</h1>
@@ -111,9 +113,6 @@ export const Customers = (): JSX.Element => {
                                     <option value="2">
                                         Modificar Cliente
                                     </option>
-                                    <option value="3">
-                                        Eliminar Cliente
-                                    </option>
                                 </select>
                                 <label htmlFor="txtApellido">Acción a realizar</label>
                             </div>
@@ -129,8 +128,7 @@ export const Customers = (): JSX.Element => {
             <form>
                 <div className="container text-center">
                     <div className="row row-cols-2 row-cols-lg-5 g-2">
-                        <div className="form-floating mb-2 col-md-3 paddingTopFind"
-                             >
+                        <div className="form-floating mb-2 col-md-3 paddingTopFind">
                             <select name="param" className="form-control" id="listFind" placeholder=" "
                                     required>
                                 <option value="Id">
@@ -229,6 +227,6 @@ export const Customers = (): JSX.Element => {
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </>
     );
 }

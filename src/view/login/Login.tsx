@@ -8,7 +8,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../style/Login/loginStyle.css";
 import { User } from "../../model/user/dto/User";
 import { MessageSocket } from "../../model/message/MessageSocket";
-import {Main} from "../main/Main";
 
 export const Login: FC = () => {
     const [formData, setFormData] = useState({
@@ -21,24 +20,23 @@ export const Login: FC = () => {
         setFormData({ ...formData, [name]: value });
     };
     
-    let isLogin: boolean = false;
-    
     const handleSubmit = async (ev: FormEvent<HTMLFormElement>) => {
         ev.preventDefault();
         try {
             const ws = new WebSocket("wss://localhost:7104/auth/login");
             ws.onopen = () => {
-                const loginData = {
+                const user = {
                     email: formData.email,
-                    password: formData.password,
-                };
-                ws.send(JSON.stringify(loginData));
+                    password: formData.password
+                }
+                ws.send(JSON.stringify(user));
             };
             ws.onmessage = async (ev: MessageEvent) => {
                 const userData = JSON.parse(ev.data) as MessageSocket<User>;
                 if (userData.Status === 200) {
-                    localStorage.setItem(".Session.DulcePastel.", userData.Token);
-                    isLogin = true;
+                    localStorage.setItem(".Session.DulcePastel.User", JSON.stringify(userData.Data[0]));
+                    localStorage.setItem(".Session.DulcePastel.Token", userData.Token);
+                    window.location.href = "/";
                 }
             };
             ws.onclose = () => {};
@@ -46,10 +44,9 @@ export const Login: FC = () => {
             throw e;
         }
     };
-    
     return (
         <>
-            {isLogin ? <Main /> :
+            {localStorage.getItem(".Session.DulcePastel.User") && localStorage.getItem(".Session.DulcePastel.Token") ? window.location.href = "/" :
             <form onSubmit={handleSubmit}>
                 <div className="container">
                     <h1>Dulce Pastel</h1>
