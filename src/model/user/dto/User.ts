@@ -12,5 +12,6 @@ export class User implements IUser {
     Foto: string = "";
     Ocupacion: string = "";
     FchNacimiento: string = "";
+    Token: string = "";
 
 }

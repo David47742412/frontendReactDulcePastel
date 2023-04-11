@@ -1,9 +1,17 @@
-import {ChangeEvent, FC, useState} from "react";
+import React, {ChangeEvent, useContext, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../style/customers/customersStyle.css';
+import {NavBar} from "../nav/NavBar";
+import {Login, UserContext} from "../login/Login";
 
-export const Custormers: FC = () => {
+export interface isHidden {
+    hidden: boolean;
+}
+
+export const Customers = (): JSX.Element => {
     
+    const context = useContext(UserContext);
+
     const [FormData, setFormData] = useState({
         id: "",
         nombre: "",
@@ -28,9 +36,11 @@ export const Custormers: FC = () => {
         setFormData({...FormData, [name]: value})
         console.log(value);
     }
+    if (context == null) return <Login />
     
     return (
-        <>
+        <div>
+            <NavBar />
             <div className="mainTitleText">
                 <h1>Clientes</h1>
                 <p>Administración de clientes</p>
@@ -223,6 +233,6 @@ export const Custormers: FC = () => {
                     </tr>
                 </tbody>
             </table>
-        </>
+        </div>
     );
 }

@@ -1,29 +1,28 @@
-import React from 'react';
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes
+} from 'react-router-dom';
+import {Suppliter} from "./view/suppliter/Suppliter";
+import {Customers} from "./view/customers/Customers";
+import { Main } from './view/main/Main';
+import React from "react";
 import {Login} from "./view/login/Login";
 
 const App = (): JSX.Element => {
-/*
-    useEffect(() => {wss://localhost:7104/auth/login
-        const ws = new WebSocket("wss://localhost:7154/ws");
-        ws.onopen = () => {
-            console.log("connected");
-            ws.send("connect");
-        };
-
-        ws.onmessage = (event: MessageEvent) => {
-            console.log("message received");
-            setDatos(JSON.parse(event.data));
-        };
-
-        ws.onclose = () => {
-            console.log("disconnected");
-        };
-    }, []);
-*/
     return (
-        <>
-           <Login />
-        </>
+        <div>
+            <Router>
+                <div>
+                    <Routes>
+                        <Route path="/" element={<Main />} />
+                        <Route path="/clientes" element={<Customers />} />
+                        <Route path="/proveedores" element={<Suppliter hidden={false} />} />
+                        <Route path="/login" element={<Login />} />
+                    </Routes>
+                </div>
+            </Router>
+        </div>
     );
 }
 
