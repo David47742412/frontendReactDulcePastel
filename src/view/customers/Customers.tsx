@@ -1,16 +1,12 @@
-import React, {ChangeEvent, useContext, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../style/customers/customersStyle.css';
 import {NavBar} from "../nav/NavBar";
-import {Login, UserContext} from "../login/Login";
+import {Login} from "../login/Login";
 
-export interface isHidden {
-    hidden: boolean;
-}
 
 export const Customers = (): JSX.Element => {
     
-    const context = useContext(UserContext);
 
     const [FormData, setFormData] = useState({
         id: "",
@@ -36,7 +32,7 @@ export const Customers = (): JSX.Element => {
         setFormData({...FormData, [name]: value})
         console.log(value);
     }
-    if (context == null) return <Login />
+    if (localStorage.getItem(".Session.DulcePastel.") == null) return <Login />
     
     return (
         <div>

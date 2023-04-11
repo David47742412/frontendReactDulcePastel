@@ -1,14 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../style/Login/loginStyle.css'
 import { Link } from 'react-router-dom';
-import {useContext} from "react";
-import {UserContext} from "../login/Login";
-
 export const NavBar = () => {
-	
-	const context = useContext(UserContext);
-	
-	if (context == null) return <></>
 	
 	return (
 		<>

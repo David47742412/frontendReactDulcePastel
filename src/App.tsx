@@ -17,7 +17,7 @@ const App = (): JSX.Element => {
                     <Routes>
                         <Route path="/" element={<Main />} />
                         <Route path="/clientes" element={<Customers />} />
-                        <Route path="/proveedores" element={<Suppliter hidden={false} />} />
+                        <Route path="/proveedores" element={<Suppliter />} />
                         <Route path="/login" element={<Login />} />
                     </Routes>
                 </div>
