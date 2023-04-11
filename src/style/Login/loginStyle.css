@@ -1,51 +1,84 @@
 @font-face {
-    font-family: poppins-bold;
-    src: url("../../../fonts/poppins/Poppins-Bold.ttf");
+  font-family: poppins-bold;
+  src: url("../fonts/poppins/Poppins-Bold.ttf");
 }
 
 @font-face {
-    font-family: poppins-std;
-    src: url("../../../fonts/poppins/Poppins-Regular.ttf");
+  font-family: poppins-std;
+  src: url("../fonts/poppins/Poppins-Regular.ttf");
 }
 
-* {
-    font-family: poppins-std, sans-serif;
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url(img/fondo.jpg);
+  font-family: Arial, sans-serif;
+  font-size: small;
 }
-
-.titleText h1 {
-    text-align: center;
-    font-family: poppins-bold, sans-serif;
-    padding-top: 1em;
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 25px 10px rgba(44, 35, 35, 0.2);
+  text-align: center;
+  width: 380px;
+  height: 380px;
 }
-
-.titleText p, button {
-    text-align: center;
-    font-family: poppins-std, sans-serif;
+.container h1 {
+  font-size: 25px;
+  margin-bottom: 20px;
+  color: #b35f45;
+  background-color: transparent;
+  font-weight: bold;
 }
-
-.formLogin {
-    border-radius: 30px;
-    background: #f9f9f9;
+.container input[type="email"],
+.container input[type="password"] {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+  width: 100%;
+  background: transparent;
+  font-size: 11px;
+  color: gray;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
 }
-
-.PositionLabels label {
-    margin-top: 1em;
+.container input[type="email"]:focus,
+.container input[type="password"]:focus {
+  border-bottom: 1px solid #b35f45;
 }
-
-.centerDivWithInputs div {
-    padding-top: 1em;
-    text-align: center;
-    width: 40%;
-    margin-left: 31%;
-    margin-right: 25%;
-
+.container input[type="submit"] {
+  background: #b35f45;
+  border: none;
+  padding: 10px 30px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
-
-@media only screen and (max-width: 767px), (max-height: 536px) {
-    .centerDivWithInputs div {
-        padding-top: 1em;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-    }
+.container input[type="submit"]:hover {
+  background: #a64a3e;
+}
+.container p {
+  color: #888;
+  font-size: 11px;
+  margin-top: 20px;
+}
+.logo {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  height: 100px;
+  width: 200px;
+  font-size: 90px;
+  color: transparent;
+  text-shadow: 4px 4px transparent;
+  background-image: url(img/logo.png);
 }
