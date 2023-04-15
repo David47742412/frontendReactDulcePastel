@@ -12,6 +12,14 @@
     font-family: poppins, sans-serif;
 }
 
+.backGroundTable {
+    background: white;
+}
+
+.btnAlign {
+    margin-right: 1em;
+}
+
 .PriceInput span {
     width: 14%;
     background: #50d07f;
