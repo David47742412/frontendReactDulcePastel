@@ -1,16 +1,18 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, MouseEvent, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css.map';
 import '../../style/customers/customersStyle.css';
 import {NavBar} from "../nav/NavBar";
 import {User} from "../../model/user/dto/User";
 import {MessageSocket} from "../../model/message/MessageSocket";
 import {GenericView} from "../../model/viewData/dto/GenericView";
+import { Customers as Cliente } from "../../model/customers/dto/Customers";
 
 export const Customers = (): JSX.Element => {
     const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_SESSION as string) as string) as User | null;
     const url = process.env.REACT_APP_URL_API;
     const message = new MessageSocket<GenericView>();
     message.Token = user?.Token as string;
+    const client = new Cliente();
 
     const [FormData, setFormData] = useState({
         id: "",
@@ -28,6 +30,26 @@ export const Customers = (): JSX.Element => {
     const [document, setDocument] = useState<GenericView[] | null>(null);
     const [customers, setCustomers] = useState<GenericView [] | null>(null);
 
+    const onClickModifed = (ev: MouseEvent<HTMLButtonElement>) => {
+        const findCustomer = customers?.filter(e => e.Value1 === ev.currentTarget.value)[0] as GenericView;
+        let fecha = findCustomer?.Value10.toString();
+        fecha = fecha.split("/");
+        fecha = new Date(Number(fecha[2]), Number(fecha[1]) - 1, Number(fecha[0]))
+        fecha = `${fecha.getFullYear()}-${('0' + (fecha.getMonth() + 1)).slice(-2)}-${('0' + fecha.getDate()).slice(-2)}`;;
+        setFormData({
+            id: findCustomer?.Value1 ?? "",
+            nombre: findCustomer?.Value2 ?? "",
+            apellido: findCustomer?.Value3 ?? "",
+            tipoDocId: findCustomer?.Value4,
+            nroDoc: findCustomer?.Value5 ?? "",
+            direccion: findCustomer?.Value6 ?? "",
+            celular: findCustomer?.Value7 ?? "",
+            telFijo: findCustomer?.Value8 ?? "",
+            email: findCustomer?.Value9 ?? "",
+            fNacimiento: fecha ?? "",
+        });
+    }
+
     //find documents
     useEffect(() => {
         const wsDocument = new WebSocket(`${url}/document`);
@@ -41,14 +63,13 @@ export const Customers = (): JSX.Element => {
                 window.location.href = "/login"
             } else {
                 setDocument(response.Data);
+                FormData.tipoDocId = response.Data?.[0].Value1;
             }
         };
 
     }, []);
 
-    console.log(FormData.tipoDocId);
-
-    //Crud customers
+    //find customers
     useEffect(() => {
         const wsCustomers = new WebSocket(`${url}/customers`);
         wsCustomers.onopen = () => {
@@ -60,22 +81,33 @@ export const Customers = (): JSX.Element => {
             if (response.Status === 401) {
                 window.location.href = "/login"
             } else {
+                let array = response.Data;
+                for (let i = 0; i < array.length; i++) {
+                    let fecha = new Date(array[i].Value10).toLocaleString().toString();
+                    for (let x = 0; x < fecha.length; x++) {
+                        if (fecha[x] === ",") {
+                            fecha = fecha.substring(0, x);
+                            break;
+                        }
+                    }
+                    array[i].Value10 = fecha;
+                }
                 setCustomers(response.Data);
             }
         }
     }, []);
 
-    const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = ev.target;
-        setFormData({...FormData, [name]: value})
+    const onClickDelete = (ev: MouseEvent<HTMLButtonElement>) => {
+        client.Id = ev.currentTarget.value;
+        const message = client.Assign("Delete", client);
+        client.Crud(message);
     }
 
-    const handleSelect = (ev: ChangeEvent<HTMLSelectElement>) => {
+    const handleChange = (ev: ChangeEvent<any>) => {
         const {name, value} = ev.target;
         setFormData({...FormData, [name]: value})
+        console.log(value)
     }
-
-    const iso8601Regex: RegExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
 
     return (
         <>
@@ -111,7 +143,8 @@ export const Customers = (): JSX.Element => {
                                         </div>
                                         <div className="form-floating mb-2 col-md-3 splitComponents">
                                             <select name="tipoDocId" className="form-control" id="listTipoDocId"
-                                                    placeholder=" " onSelect={handleSelect} required>
+                                                    placeholder=" " onChange={handleChange}
+                                                    required>
                                                 {document?.map((dt) => (
                                                     <option value={dt.Value1} key={dt.Value1}>
                                                         {dt.Value2}
@@ -281,15 +314,16 @@ export const Customers = (): JSX.Element => {
                                     <td>{e.Value7}</td>
                                     <td>{e.Value8}</td>
                                     <td>{e.Value9}</td>
-                                    <td>{typeof e.Value10 === 'string' && iso8601Regex.test(e.Value10) ? new Date(e.Value10).toLocaleString().toString().substring(0, 10) : ''}</td>
+                                    <td>{e.Value10}</td>
                                     <td className="text-center">
-                                        <button className="btn btn-outline-primary btnAlign">Modificar</button>
-                                        <form>
-                                            <button className="btn btn-outline-danger btnAlign"
-                                                    value={e.Value1}>
-                                                Eliminar
-                                            </button>
-                                        </form>
+                                        <button className="btn btn-outline-primary btnAlign" type="button"
+                                                onClick={onClickModifed} value={e.Value1}>
+                                            Modificar
+                                        </button>
+
+                                        <button className="btn btn-outline-danger btnAlign" value={e.Value1} onClick={onClickDelete}>
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
