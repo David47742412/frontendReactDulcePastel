@@ -84,7 +84,7 @@ export const Login: FC = () => {
                     </div>
                 </form>
             }
-            <h1 className="logo"></h1>
+            <h1 className="logo"> </h1>
         </>
     );
 };

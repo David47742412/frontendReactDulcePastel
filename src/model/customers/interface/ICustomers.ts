@@ -7,13 +7,13 @@ export interface ICustomers {
     Apellido: string;
     TipoDocId: string;
     NroDoc: string;
+    TelFijo: string;
     Direccion: string;
     Celular: string;
-    telFijo: string;
     Email: string;
-    FNacimiento: Date;
+    FNacimiento: string;
 
-    Assign(message: string, customers: Customers): MessageSocket<Customers>;
+    Assign(message: string, customers: Customers | any): MessageSocket<Customers | any>;
 
-    Crud(message: MessageSocket<Customers>): void;
+    Crud(message: MessageSocket<Customers>): () => void;
 }

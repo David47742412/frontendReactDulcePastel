@@ -4,7 +4,7 @@ import {
     Routes
 } from 'react-router-dom';
 import {Suppliter} from "./view/suppliter/Suppliter";
-import {Customers} from "./view/customers/Customers";
+import {Customers as Custom} from "./view/customers/Customers";
 import { Main } from './view/main/Main';
 import React from "react";
 import {Login} from "./view/login/Login";
@@ -16,7 +16,7 @@ const App = (): JSX.Element => {
                 <div>
                     <Routes>
                         <Route path="/" element={<Main />} />
-                        <Route path="/clientes" element={<Customers />} />
+                        <Route path="/clientes" element={<Custom />} />
                         <Route path="/proveedores" element={<Suppliter />} />
                         <Route path="/login" element={<Login />} />
                     </Routes>

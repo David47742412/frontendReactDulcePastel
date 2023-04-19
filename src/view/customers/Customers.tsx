@@ -1,19 +1,20 @@
-import React, {ChangeEvent, MouseEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, memo, MouseEvent, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css.map';
 import '../../style/customers/customersStyle.css';
 import {NavBar} from "../nav/NavBar";
 import {User} from "../../model/user/dto/User";
 import {MessageSocket} from "../../model/message/MessageSocket";
 import {GenericView} from "../../model/viewData/dto/GenericView";
-import { Customers as Cliente } from "../../model/customers/dto/Customers";
+import {Customers as Cliente} from "../../model/customers/dto/Customers";
+import App from "../../App";
+
+const url = process.env.REACT_APP_URL_API;
 
 export const Customers = (): JSX.Element => {
     const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_SESSION as string) as string) as User | null;
-    const url = process.env.REACT_APP_URL_API;
-    const message = new MessageSocket<GenericView>();
+    const [message, setMessage] = useState<MessageSocket<GenericView>>(new MessageSocket<GenericView>());
     message.Token = user?.Token as string;
     const client = new Cliente();
-
     const [FormData, setFormData] = useState({
         id: "",
         nombre: "",
@@ -29,13 +30,14 @@ export const Customers = (): JSX.Element => {
 
     const [document, setDocument] = useState<GenericView[] | null>(null);
     const [customers, setCustomers] = useState<GenericView [] | null>(null);
+    let action = "1";
 
     const onClickModifed = (ev: MouseEvent<HTMLButtonElement>) => {
         const findCustomer = customers?.filter(e => e.Value1 === ev.currentTarget.value)[0] as GenericView;
         let fecha = findCustomer?.Value10.toString();
         fecha = fecha.split("/");
         fecha = new Date(Number(fecha[2]), Number(fecha[1]) - 1, Number(fecha[0]))
-        fecha = `${fecha.getFullYear()}-${('0' + (fecha.getMonth() + 1)).slice(-2)}-${('0' + fecha.getDate()).slice(-2)}`;;
+        fecha = `${fecha.getFullYear()}-${('0' + (fecha.getMonth() + 1)).slice(-2)}-${('0' + fecha.getDate()).slice(-2)}`;
         setFormData({
             id: findCustomer?.Value1 ?? "",
             nombre: findCustomer?.Value2 ?? "",
@@ -50,36 +52,27 @@ export const Customers = (): JSX.Element => {
         });
     }
 
-    //find documents
-    useEffect(() => {
-        const wsDocument = new WebSocket(`${url}/document`);
-        wsDocument.onopen = (ev: Event) => {
-            message.Message = "find";
-            wsDocument.send(JSON.stringify(message));
-        };
-        wsDocument.onmessage = (ev: MessageEvent) => {
-            const response = JSON.parse(ev.data) as MessageSocket<GenericView>;
-            if (response.Status === 401) {
-                window.location.href = "/login"
-            } else {
-                setDocument(response.Data);
-                FormData.tipoDocId = response.Data?.[0].Value1;
-            }
-        };
+    const onSelect = (ev: ChangeEvent<HTMLSelectElement>) => {
+        action = ev.target.value
+        console.log(action === "1" ? "insert" : "update");
+    }
 
-    }, []);
-
-    //find customers
+    //find
     useEffect(() => {
-        const wsCustomers = new WebSocket(`${url}/customers`);
+        const wsCustomers: WebSocket = new WebSocket(`${url}/customers`);
+        const wsDocument: WebSocket = new WebSocket(`${url}/document`);
         wsCustomers.onopen = () => {
             message.Message = "find";
             wsCustomers.send(JSON.stringify(message));
-        }
+        };
+        wsDocument.onopen = () => {
+            message.Message = "find";
+            wsDocument.send(JSON.stringify(message));
+        };
         wsCustomers.onmessage = (ev: MessageEvent) => {
             const response = JSON.parse(ev.data) as MessageSocket<GenericView>;
             if (response.Status === 401) {
-                window.location.href = "/login"
+                window.location.href = "/login";
             } else {
                 let array = response.Data;
                 for (let i = 0; i < array.length; i++) {
@@ -94,19 +87,47 @@ export const Customers = (): JSX.Element => {
                 }
                 setCustomers(response.Data);
             }
-        }
+        };
+        console.log(action);
+        wsDocument.onmessage = (ev: MessageEvent) => {
+            const response = JSON.parse(ev.data) as MessageSocket<GenericView>;
+            if (response.Status === 401) {
+                window.location.href = "/login"
+            } else {
+                setDocument(response.Data);
+                FormData.tipoDocId = response.Data?.[0].Value1;
+            }
+        };
     }, []);
 
     const onClickDelete = (ev: MouseEvent<HTMLButtonElement>) => {
         client.Id = ev.currentTarget.value;
+        client.FNacimiento = "2030-11-12";
+        console.log(client.FNacimiento);
         const message = client.Assign("Delete", client);
+        client.Crud(message);
+    }
+
+    const onSubmitCustomer = (ev: ChangeEvent<HTMLFormElement>) => {
+        ev.preventDefault();
+        client.Id = FormData.id;
+        client.Nombre = FormData.nombre;
+        client.Apellido = FormData.apellido;
+        client.TipoDocId = FormData.tipoDocId;
+        client.NroDoc = FormData.nroDoc;
+        client.Direccion = FormData.direccion;
+        client.Celular = FormData.celular;
+        client.TelFijo = FormData.telFijo;
+        console.log(FormData.telFijo);
+        client.Email = FormData.email;
+        client.FNacimiento = FormData.fNacimiento;
+        const message = client.Assign(action === "1" ? "insert" : "update", client);
         client.Crud(message);
     }
 
     const handleChange = (ev: ChangeEvent<any>) => {
         const {name, value} = ev.target;
         setFormData({...FormData, [name]: value})
-        console.log(value)
     }
 
     return (
@@ -120,7 +141,7 @@ export const Customers = (): JSX.Element => {
                             <p>Administración de clientes</p>
                         </div>
                         <div className="container text-center">
-                            <form>
+                            <form onSubmit={onSubmitCustomer}>
                                 <div className="backGroundForm">
                                     <div className="row row-cols-2 row-cols-lg-5 g-2">
                                         <div className="form-floating">
@@ -192,7 +213,8 @@ export const Customers = (): JSX.Element => {
                                         </div>
                                         <div className="form-floating mb-2 col-md-3">
                                             <select name="accion" className="form-control" id="listAccion"
-                                                    placeholder=" "
+                                                    placeholder=""
+                                                    onChange={onSelect}
                                                     required>
                                                 <option value="1">
                                                     Agregar Cliente
@@ -259,7 +281,7 @@ export const Customers = (): JSX.Element => {
                                             Código</label>
                                     </div>
                                     <div className="text-center">
-                                        <button className="btn btn-primary styleButtonAction" type="submit"
+                                        <button className="btn btn-primary styleButtonAction" type="button"
                                                 id="btnFind">Buscar
                                         </button>
                                     </div>
@@ -321,7 +343,8 @@ export const Customers = (): JSX.Element => {
                                             Modificar
                                         </button>
 
-                                        <button className="btn btn-outline-danger btnAlign" value={e.Value1} onClick={onClickDelete}>
+                                        <button className="btn btn-outline-danger btnAlign" value={e.Value1}
+                                                onClick={onClickDelete}>
                                             Eliminar
                                         </button>
                                     </td>
@@ -334,3 +357,5 @@ export const Customers = (): JSX.Element => {
         </>
     );
 }
+
+export default memo(Customers);
